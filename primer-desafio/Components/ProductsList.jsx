@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Pressable, View, Text, TextInput, FlatList, Modal } from 'react-native';
+import { Pressable, View, Text, FlatList, StyleSheet } from 'react-native';
+import RemoveModal from './RemoveModal';
+import ProductsInput from './ProductsInput';
 
 export const ProductsList = () => {
     const [inputValue, setInputValue] = useState('');
@@ -33,45 +35,77 @@ export const ProductsList = () => {
     };
 
     return (
-        <View>
-            <Text>ProductsList</Text>
-            <TextInput 
-                onChangeText={handleInputValue} 
-                value={inputValue} 
-                placeholder='Ingrese producto' 
+        <View style={styles.container}>
+            <Text>Products List</Text>
+
+            <ProductsInput
+                onChangeText={handleInputValue}
+                value={inputValue}
             />
-            <Pressable onPress={addItem}> 
-                <Text> Agregar </Text> 
+            
+            <Pressable  style={styles.button} onPress={addItem}>
+                <Text style={styles.buttonText}>  Agregar </Text>
             </Pressable>
-            <Text> Productos Agregados:</Text>
+            <Text style={styles.subtitle}> Productos Agregados:</Text>
             <FlatList
                 data={cartItem}
                 renderItem={({ item }) => (
-                    <View key={`product_${item.id}`}>
-                        <Text>Producto: {item.name}</Text>
-                        <Pressable onPress={() => removeItem(item.id)}> 
-                            <Text style={{ color: 'red' }}>Eliminar</Text> 
+                    <View styles={styles.itemListStyle}key={`product_${item.id}`}>
+                        <Text >Producto: {item.name}</Text>
+                        <Pressable onPress={() => removeItem(item.id)}>
+                            <Text style={styles.deleteButton}>Eliminar</Text>
                         </Pressable>
                     </View>
                 )}
                 keyExtractor={(item) => item.id.toString()}
             />
-            <Modal
-                visible={modalVisible}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View>
-                    <Text>¿Está seguro que desea eliminar este producto?</Text>
-                    <Pressable onPress={confirmDeleteItem}> 
-                        <Text>Confirmar</Text> 
-                    </Pressable>
-                    <Pressable onPress={() => setModalVisible(false)}> 
-                        <Text>Cancelar</Text> 
-                    </Pressable>
-                </View>
-            </Modal>
+            <RemoveModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                confirmDeleteItem={confirmDeleteItem}
+            />
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+   
+        container: {
+            flex: 1,
+            width: '100%',
+            alignItems: 'center',
+            padding: 30,
+            backgroundColor: '#fdf0d5'
+        },
+        button: {
+            backgroundColor: '#007bff',
+            borderRadius: 10,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            marginTop: 10,
+        },
+        buttonText: {
+            color: '#003049',
+            fontSize: 18,
+        },
+        productContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 5,
+        },
+        itemListStyle:{
+            padding: 0,
+        },
+        productText: {
+            fontSize: 16,
+            
+            color: '#c1121f',
+            
+        },
+        deleteButton: {
+            color: '#c1121f',
+            fontSize: 16,
+            borderRadius: 25
+        },
+    
+})
